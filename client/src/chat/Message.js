@@ -3,6 +3,7 @@ import { Box, Typography } from "@mui/material";
 import React, { useContext } from "react";
 import { FormatDate } from "../utils/common-utils";
 import { AccountContext } from "../context/AccountProvider";
+import {iconPDF} from "../constants/data";
 
 const Own=styled(Box)`
 margin: 4px;
@@ -40,6 +41,22 @@ word-break: keep-all;
 
 `
 
+const Time1=styled(Typography)`
+font-size: 10px;
+color: #919191;
+margin-top: 4px;
+word-break: keep-all;
+margin-left: 90%;
+`
+
+const Time2=styled(Typography)`
+font-size: 10px;
+color: #919191;
+margin-top: 4px;
+word-break: keep-all;
+margin-left: 70%;
+`
+
 const Message=({message})=>{
 
     const {account}=useContext(AccountContext);
@@ -55,8 +72,9 @@ const Message=({message})=>{
         </Own>
         :
         <Wrapper>
-            <Text>{message.text}</Text> 
-           <Time>{FormatDate(message.createdAt)} </Time>
+           {
+                message.type==='file' ? <ImageMessage message={message}/> : <TextMessage message={message}/>
+            }
         </Wrapper>
         }
         </>
@@ -68,11 +86,21 @@ const ImageMessage=({message})=>{
        <Box>
         {
         message?.text?.includes('.pdf')?
-        <Box>
+        <Box>            
+            <a href={message.text}>
+            <img src={iconPDF} alt="pdf" style={{width: 80}}></img>
+            </a>
+            <Time2>{FormatDate(message.createdAt)} </Time2>
         </Box>
         :
-        <img style={{width: 300, height: "100%", objectFit: "cover"}} src={message.url} alt={message.text}></img>
-    }
+        <Box>
+            <a href={message.text}>
+        <img style={{width: 300, height: "100%", objectFit: "cover"}} src={message.text} alt={message.text}></img>
+        </a>
+        <Time1>{FormatDate(message.createdAt)} </Time1>
+        </Box>
+        }
+        
        </Box> 
     );
 }
